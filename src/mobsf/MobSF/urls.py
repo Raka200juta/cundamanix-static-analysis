@@ -31,7 +31,7 @@ from mobsf.MobSF.views import (
 from mobsf.MobSF.views.api import api_static_analysis as api_sz
 from mobsf.MobSF.views.api import api_android_dynamic_analysis as api_dz
 from mobsf.MobSF.views.api import api_ios_dynamic_analysis as api_idz
-
+from mobsf.MobSF.views.api import api_pdf_report as api_pdf
 from mobsf.MobSF.views.api import api_device_status as api_device
 
 from mobsf.StaticAnalyzer import tests
@@ -91,6 +91,7 @@ urlpatterns = [
     re_path(r'^api/v1/scan_logs$', api_sz.api_scan_logs),
     re_path(r'^api/v1/delete_scan$', api_sz.api_delete_scan),
     re_path(r'^api/v1/download_pdf$', api_sz.api_pdf_report),
+    re_path(r'^api/v1/permissions_pdf$', api_pdf.pdf_report),
     re_path(r'^api/v1/report_json$', api_sz.api_json_report),
     re_path(r'^api/v1/view_source$', api_sz.api_view_source,
             name='api_view_source'),

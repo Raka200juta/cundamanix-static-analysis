@@ -1,0 +1,65 @@
+{% load static %}
+
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Permissions Report</title>
+        <link rel="stylesheet" href="{{ base_url }}{% static "others/css/pdf_report.css" %}">
+    </head>
+    <body>
+        <div class="container">
+            <h1>ANDROID - {{ package_name }}</h1>
+            <p>Scan Date: {{ timestamp }}</p>
+
+            <h2>Security Score</h2>
+            <h3>
+                {% if appsec.security_score > 70 %}
+                    <span class="success">{{ appsec.security_score }}/100 (SAFE)</span>
+                {% elif appsec.security_score > 40 %}
+                    <span class="warning">{{ appsec.security_score }}/100 (MALICIOUS)</span>
+                {% else %}
+                    <span class="danger">{{ appsec.security_score }}/100 (DANGEROUS)</span>
+                {% endif %}
+            </h3>
+
+            <h2>APPLICATION PERMISSIONS</h2>
+            {% if permissions %}
+            <table class="basic">
+                <thead>
+                    <tr>
+                        <th>PERMISSION</th>
+                        <th>STATUS</th>
+                        <th>INFO</th>
+                        <th>DESCRIPTION</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for perm, desc in permissions.items %}
+                    <tr>
+                        <td>{{ perm }}</td>
+                        <td>
+                            {% if desc.status == 'dangerous' %}
+                                <span class="danger">dangerous</span>
+                            {% elif desc.status == 'normal' %}
+                                <span class="info">normal</span>
+                            {% elif desc.status == 'signatureOrSystem' %}
+                                <span class="warning">SignatureOrSystem</span>
+                            {% elif desc.status == 'signature' %}
+                                <span class="success">signature</span>
+                            {% elif desc.status == 'unknown' %}
+                                <span class="secondary">unknown</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ desc.info }}</td>
+                        <td>{{ desc.description }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <p>No permissions required by this application.</p>
+            {% endif %}
+        </div>
+    </body>
+</html>
