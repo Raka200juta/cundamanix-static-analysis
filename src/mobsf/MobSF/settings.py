@@ -416,7 +416,7 @@ else:
     # IP and Port of the MobSF Windows VM
     # example: WINDOWS_VM_IP = '127.0.0.1'   ;noqa E800
     WINDOWS_VM_IP = os.getenv('MOBSF_WINDOWS_VM_IP')
-    WINDOWS_VM_PORT = os.getenv('MOBSF_WINDOWS_VM_PORT', '8000')
+    WINDOWS_VM_PORT = os.getenv('MOBSF_WINDOWS_VM_PORT', '8001')
     # ==================================================
 
     # ==============3rd Party Tools=====================

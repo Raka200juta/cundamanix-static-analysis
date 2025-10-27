@@ -181,8 +181,8 @@ if __name__ == '__main__':
 
     _init_key()
 
-    server = SimpleXMLRPCServer(('0.0.0.0', 8000))
-    print('Listening on port 8000...')
+    server = SimpleXMLRPCServer(('0.0.0.0', 8001))
+    print('Listening on port 8001...')
     server.register_function(get_challenge, 'get_challenge')
     server.register_function(test_challenge, 'test_challenge')
     server.register_function(upload_file, 'upload_file')

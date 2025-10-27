@@ -71,7 +71,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '-s', '--ipport', help='IP address and Port number '
                                'of a running MobSF Server. '
-                               '(ex: 127.0.0.1:8000)')
+                               '(ex: 127.0.0.1:8001)')
     parser.add_argument(
         '-k', '--apikey', help='MobSF API Key')
     parser.add_argument(
