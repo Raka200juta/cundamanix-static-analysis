@@ -35,7 +35,7 @@ def main():
             db()
     except Exception:
         db()
-    listen = '127.0.0.1:8001'
+    listen = '127.0.0.1:5001'
     if len(sys.argv) == 2 and sys.argv[1]:
         if sys.argv[1] == 'db':
             db()
