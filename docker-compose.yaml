@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  mobsf:
+    build: .
+    ports:
+      - "5001:5001"
+    environment:
+      - DJANGO_SUPERUSER_USERNAME=mobsf
+      - DJANGO_SUPERUSER_PASSWORD=mobsf
+      - RUN_CLEAN=false
+    volumes:
+      - ./src:/app/src
+    restart: unless-stopped
