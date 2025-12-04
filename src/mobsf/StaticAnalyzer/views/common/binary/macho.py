@@ -270,14 +270,13 @@ class MachOChecksec:
             stripped_sym = 'radr://5614542'
             # radr://5614542 symbol is added back for
             # debug symbols stripped binaries
-            for i in self.macho.symbols:
-                if i.name.lower().strip() in (
-                        '__mh_execute_header', stripped_sym):
-                    # __mh_execute_header is present in both
-                    # stripped and unstripped binaries
-                    # also ignore radr://5614542
-                    continue
-                if (i.type & 0xe0) > 0 or i.type in (0x0e, 0x1e):
+            for i in self.symbols:
+                t = getattr(i.type, "value", i.type)
+                try:
+                    t_int = int(t)
+                except Exception:
+                    t_int = 0
+                if (t_int & 0xe0) > 0 or t_int in (0x0e, 0x1e):
                     # N_STAB set or 14, 30
 
                     # N_STAB	0xe0  /* if any of these bits set,

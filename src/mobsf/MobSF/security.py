@@ -139,50 +139,68 @@ def store_exec_hashes_at_first_run():
 
 
 def subprocess_hook(oldfunc, *args, **kwargs):
-    global EXECUTABLE_HASH_MAP
-    if isinstance(args[0], str):
-        # arg is a string
-        agmtz = args[0].split()
-        exec1 = agmtz[0]
+    # Normalize first arg: string command or list/tuple
+    cmd = args[0] if args else None
+    if cmd is None:
+        return oldfunc(*args, **kwargs)
+    if isinstance(cmd, str):
+        agmtz = cmd.split()
+    elif isinstance(cmd, (list, tuple)):
+        agmtz = list(cmd)
     else:
-        # list of args
-        agmtz = args[0]
-        exec1 = agmtz[0]  # executable
-    exec2 = None  # secondary executable
+        # Unsupported type, skip tamper check
+        return oldfunc(*args, **kwargs)
+    if not agmtz:
+        return oldfunc(*args, **kwargs)
+
+    exec1 = agmtz[0]
+    exec2 = None  # secondary executable (.jar if any)
+
     for arg in agmtz:
-        if arg.endswith('.jar'):
+        if isinstance(arg, str) and arg.endswith('.jar'):
             exec2 = Path(arg).as_posix()
             break
-    if '/' in exec1 or '\\' in exec1:
-        exec1 = Path(exec1).as_posix()
+
+    # Resolve primary executable path
+    if isinstance(exec1, str):
+        if '/' in exec1 or '\\' in exec1:
+            exec1 = Path(exec1).as_posix()
+        else:
+            found = which(exec1)
+            if not found:
+                # Unknown executable, skip check
+                return oldfunc(*args, **kwargs)
+            exec1 = Path(found).as_posix()
     else:
-        exec1 = Path(which(exec1)).as_posix()
+        # Non-string executable, skip check
+        return oldfunc(*args, **kwargs)
+
     executable_in_hash_map = False
     if exec1 in EXECUTABLE_HASH_MAP:
         executable_in_hash_map = True
         if EXECUTABLE_HASH_MAP[exec1] != sha256(exec1):
-            msg = (
-                f'Executable Tampering Detected. [{exec1}]'
-                ' has been modified during runtime')
+            msg = (f'Executable Tampering Detected. [{exec1}] '
+                   'has been modified during runtime')
             logger.error(msg)
             raise Exception(msg)
+
     if exec2 and exec2 in EXECUTABLE_HASH_MAP:
         executable_in_hash_map = True
         if EXECUTABLE_HASH_MAP[exec2] != sha256(exec2):
-            msg = (
-                f'JAR Tampering Detected. [{exec2}]'
-                ' has been modified during runtime')
+            msg = (f'JAR Tampering Detected. [{exec2}] '
+                   'has been modified during runtime')
             logger.error(msg)
             raise Exception(msg)
+
     if not executable_in_hash_map:
         logger.warning('Executable [%s] not found in known hashes, '
-                       'skipping runtime executable '
-                       'tampering detection', exec1)
+                       'skipping runtime executable tampering detection', exec1)
         _, signature = get_executable_hashes()
-        if EXECUTABLE_HASH_MAP['signature'] != signature:
+        if EXECUTABLE_HASH_MAP.get('signature') != signature:
             msg = 'Executable/Library Tampering Detected'
             logger.error(msg)
             raise Exception(msg)
+
     return oldfunc(*args, **kwargs)
 
 

@@ -199,7 +199,7 @@ def static_analyzer_ios(request, checksum, api=False):
                     app_dict['bin_dir'],
                     'macho')
                 bin_dict['dylib_analysis'] = lb['macho_analysis']
-                bin_dict['framework_analysis'] = lb['framework_analysis']
+                bin_dict['framework_analysis'] = lb.get('framework_analysis', [])
                 # Get Icon
                 get_icon_from_ipa(
                     app_dict,

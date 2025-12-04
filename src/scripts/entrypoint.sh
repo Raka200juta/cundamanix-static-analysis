@@ -8,7 +8,7 @@ set +e
 export DJANGO_SUPERUSER_USERNAME="${DJANGO_SUPERUSER_USERNAME:-mobsf}"
 export DJANGO_SUPERUSER_PASSWORD="${DJANGO_SUPERUSER_PASSWORD:-mobsf}"
 export DJANGO_SUPERUSER_EMAIL="${DJANGO_SUPERUSER_EMAIL:-}"
-python3 manage.py createsuperuser --noinput
+python3 manage.py createsuperuser --noinput || true
 set -e
 python3 manage.py create_roles
 
